@@ -22,11 +22,12 @@ while read file; do echo $file; awk -F'\t' '$3 > "2014-01-01"' /home/dxp/stock/s
 
 其后每次的数据采用追加方式：
 ./split_today_data.sh ../load_k_data/data/loaddata_$sdate_$edata .
-
 这一步主要保证一只股票的所有数据在同一个文件，从而可以单独进行计算
 
 3. 指标计算
+
 执行方式:
+
 sh main.sh ../split_data/stock 0 stock
 sh main.sh ../split_data/plate/ 0 plate
 
