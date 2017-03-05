@@ -153,6 +153,7 @@ def ma_index(indexfile):
     for i in [M1, M2]:
         s.loc[:, 'ma' + str(i)] = s['s_close'].groupby(s['s_id']).transform(ma(i))
     cols = ['ma' + str(i) for i in [M1, M2]]
+    cols = ['s_close'] + cols
     output(s, cols, indexfile)
 
 
