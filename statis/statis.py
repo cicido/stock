@@ -155,8 +155,10 @@ def get_xor(N):
             return -1
         elif x[0] < x[1]:
             return 1
-        else:
+        elif x[0] > x[1]:
             return 0
+        else:
+            return pd.NaT
     return infunc
 
 def rolling_res(N, func):
