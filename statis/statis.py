@@ -208,13 +208,26 @@ def ma_statis(indexfile):
     # stategy starts with di_change =  1 and stops with di_change = 0
     s.loc[:,'di_change'] = s['ma5_gt_ma10'].groupby(s['s_id']).apply(rolling_res(2,get_xor))
 
-
     cols = ['s_id', 's_date', 's_close', 'ma5', 'ma10', 'di5', 'di10','ma5_gt_ma10','di_change']
 
     output(s, cols, indexfile)
+    # statis:
+    # filter di_change = 0 or 1
+    # [s_date, s_close] shift 1 to make 1->0 or 0->1. very good, clever
+    s = s[(s['di_change'] ==0) | (s['di_change'] == 1)][['s_id','s_date','s_close','di_change']]
+    shift_cols = ['s_date','s_close','di_change']
+    for scol in shift_cols:
+        s.loc[:,'t_' + scol] = s.groupby('s_id')[scol].shift(-1)
+
+    #chose data
+    s = s[(s['di_change']==1) & (s['t_di_change']==0)]
+    s.loc[:,'s_gains'] = 100*s['t_s_close']/s['s_close'] - 100
+    s.loc[:,'day_diff'] = pd.to_datetime(s['t_s_date']) - pd.to_datetime(s['s_date'])
+    cols = ['s_id', 's_date','t_s_date','s_close','t_s_close','s_gains','day_diff']
+    output(s,cols,indexfile+"_statis")
 
 
-import os, sys
+import os,sys
 
 if __name__ == '__main__':
     datafile = sys.argv[1]
