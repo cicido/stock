@@ -201,8 +201,9 @@ def ma_statis(indexfile):
     # 1-> 0 ma5 begins less than ma10, sell
     # 0->0 ma5 always less than ma10, keep cash
     # 0->1 ma5 begins larger than ma10, buy
-    s.loc[:, 'ma5_gt_ma10'] = 0
+    s.loc[:, 'ma5_gt_ma10'] = pd.NaT
     s.loc[s['ma5'] > s['ma10'], 'ma5_gt_ma10'] = 1
+    s.loc[s['ma5'] <= s['ma10'],'ma5_gt_ma10'] = 0
 
     #di_change = -1, like 1->1 or 0->0 ,keep cash or keep stock,just keep
     #di_change = 0, like 1->0 sell
