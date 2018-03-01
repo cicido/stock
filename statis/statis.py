@@ -7,6 +7,7 @@ Created on Fri May 20 15:06:21 2016
 
 import pandas as pd
 import numpy as np
+from functools import reduce
 
 
 # data1 = pd.read_csv('loaddata2016_04_27_16_19_47',sep='\t',header=None,names=['s_id','s_name','s_date','s_open','s_high','s_low','s_close','s_vol','s_turnover'],dtype={'s_id':object})
@@ -184,7 +185,7 @@ def ma_statis(indexfile):
     MA3:MA(CLOSE,M3);
     MA4:MA(CLOSE,M4);
     '''
-    print 'computing MA'
+    print ('computing MA')
     M1 = 5
     M2 = 10
     M3 = 20
@@ -203,11 +204,11 @@ def ma_statis(indexfile):
     # 0->1 ma5 begins larger than ma10, buy
     s.loc[:, 'ma5_gt_ma10'] = pd.NaT
     s.loc[s['ma5'] > s['ma10'], 'ma5_gt_ma10'] = 1
-    s.loc[s['ma5'] <= s['ma10'],'ma5_gt_ma10'] = 0
+    s.loc[s['ma5'] <= s['ma10'], 'ma5_gt_ma10'] = 0
 
-    #di_change = -1, like 1->1 or 0->0 ,keep cash or keep stock,just keep
-    #di_change = 0, like 1->0 sell
-    #di_chnage = 1, like 0->1 buy
+    # di_change = -1, like 1->1 or 0->0 ,keep cash or keep stock,just keep
+    # di_change = 0, like 1->0 sell
+    # di_chnage = 1, like 0->1 buy
     # stategy starts with di_change =  1 and stops with di_change = 0
     s.loc[:,'di_change'] = s['ma5_gt_ma10'].groupby(s['s_id']).apply(rolling_res(2,get_xor))
 
@@ -250,15 +251,15 @@ if __name__ == '__main__':
             try:
                 os.mkdir(i)
             except:
-                print "mkdir %s failed,exit..." % i
+                print ("mkdir %s failed,exit..." % i)
                 sys.exit(1)
 
     relfile = datafile.split(os.sep)[-1]
-    print "relfile:", relfile
+    print ("relfile:", relfile)
     cols = ['s_id', 's_name', 's_date', 's_open', 's_high', 's_low', 's_close', 's_vol', 's_turnover']
     data = pd.read_csv(datafile, sep='\t', header=None, names=cols, dtype={'s_id': object})
 
-    print data.shape
+    print (data.shape)
     data = data.sort_values(['s_id', 's_date'])
     data = data.reset_index()
     data = data[data.columns[1:]]
